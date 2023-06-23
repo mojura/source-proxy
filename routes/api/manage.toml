@@ -1,0 +1,41 @@
+[[group]]
+name = "manage"
+group = "api"
+httpPath = "/manage"
+handlers = []
+
+[[route]]
+method = "GET"
+group = "manage"
+httpPath = ""
+handlers = ["manage.GetCurrentUser"]
+
+[[route]]
+method = "GET"
+group = "manage"
+httpPath = "/:userID"
+handlers = ["jump.CheckPermissionsMW(users,userID)", "jump.GetUser"]
+
+[[route]]
+method = "POST"
+group = "manage"
+httpPath = ""
+handlers = ["jump.CheckPermissionsMW(manage)", "manage.Create"]
+
+[[route]]
+method = "PUT"
+group = "manage"
+httpPath = "/:userID/refresh"
+handlers = ["jump.CheckPermissionsMW(manage)", "manage.RefreshAPIKey"]
+
+[[route]]
+method = "GET"
+group = "manage"
+httpPath = "/list"
+handlers = ["jump.CheckPermissionsMW(manage)", "manage.List"]
+
+[[route]]
+method = "DELETE"
+group = "manage"
+httpPath = "/:userID"
+handlers = ["jump.CheckPermissionsMW(manage)", "jump.DisableUser"]

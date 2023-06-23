@@ -1,0 +1,17 @@
+[[group]]
+name = "proxy"
+group = "api"
+httpPath = "/proxy"
+handlers = ["jump.CheckPermissionsMW(proxy)"]
+
+[[route]]
+method = "GET"
+group = "proxy"
+httpPath = "/file/:filename"
+handlers = ["proxy.Get"]
+
+[[route]]
+method = "GET"
+group = "proxy"
+httpPath = "/next/:name/:lastFilename"
+handlers = ["proxy.GetNext"]
