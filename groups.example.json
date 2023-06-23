@@ -1,0 +1,22 @@
+[
+	{
+		"group": "editors",
+		"permissions": [
+			{
+				"resource": "blogs",
+				"canRead": true,
+				"canWrite": true
+			}
+		]
+	},
+	{
+		"group": "commenters",
+		"permissions": [
+			{
+				"resource": "blogs",
+				"canRead": true,
+				"canWrite": false
+			}
+		]
+	}
+]
