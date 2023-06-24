@@ -2,7 +2,7 @@
 name = "proxy"
 group = "api"
 httpPath = "/proxy"
-handlers = ["jump.CheckPermissionsMW(proxy)"]
+handlers = ["proxy.CheckPermissionsMW"]
 
 [[route]]
 method = "GET"
@@ -13,5 +13,11 @@ handlers = ["proxy.Get"]
 [[route]]
 method = "GET"
 group = "proxy"
-httpPath = "/next/:name/:lastFilename"
+httpPath = "/next/:filename"
 handlers = ["proxy.GetNext"]
+
+[[route]]
+method = "POST"
+group = "proxy"
+httpPath = "/:filename"
+handlers = ["proxy.Export"]

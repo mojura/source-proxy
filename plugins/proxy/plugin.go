@@ -2,8 +2,11 @@ package proxy
 
 import (
 	"fmt"
+	"io"
 	"log"
+	"os"
 	"regexp"
+	"strings"
 	"sync"
 
 	"github.com/gdbu/jump"
@@ -70,7 +73,28 @@ func (p *Plugin) Export(ctx *httpserve.Context) {
 	defer p.mux.Unlock()
 	req := ctx.Request()
 	filename := updateFilename(ctx.Param("filename"))
-	if err := p.Source.Export(req.Context(), filename, req.Body); err != nil {
+
+	var (
+		f   *os.File
+		err error
+	)
+
+	if f, err = os.CreateTemp("", "exporting"); err != nil {
+		err = fmt.Errorf("error creating temporary file: %v", err)
+		ctx.WriteJSON(400, err)
+		return
+	}
+	name := f.Name()
+	defer os.Remove(name)
+	defer f.Close()
+
+	if _, err = io.Copy(f, req.Body); err != nil {
+		err = fmt.Errorf("error copying to temporary file: %v", err)
+		ctx.WriteJSON(400, err)
+		return
+	}
+
+	if err := p.Source.Export(req.Context(), filename, f); err != nil {
 		err = fmt.Errorf("error exporting: %v", err)
 		ctx.WriteJSON(400, err)
 		return
@@ -84,7 +108,7 @@ func (p *Plugin) Get(ctx *httpserve.Context) {
 	req := ctx.Request()
 	filename := ctx.Param("filename")
 	if err := p.Source.Import(req.Context(), filename, ctx.Writer()); err != nil {
-		err = fmt.Errorf("error exporting: %v", err)
+		err = fmt.Errorf("error getting: %v", err)
 		ctx.WriteJSON(400, err)
 		return
 	}
@@ -93,18 +117,31 @@ func (p *Plugin) Get(ctx *httpserve.Context) {
 // Get will get a file by name
 func (p *Plugin) GetNext(ctx *httpserve.Context) {
 	var (
-		filename string
-		err      error
+		nextFilename string
+		err          error
 	)
 
 	req := ctx.Request()
 	name := ctx.Param("name")
-	lastFilename := ctx.Param("lastFilename")
-	if filename, err = p.Source.GetNext(req.Context(), name, lastFilename); err != nil {
-		err = fmt.Errorf("error exporting: %v", err)
+	lastFilename := ctx.Param("filename")
+	if nextFilename, err = p.Source.GetNext(req.Context(), name, lastFilename); err != nil {
+		err = fmt.Errorf("error getting next filename: %v", err)
 		ctx.WriteJSON(400, err)
 		return
 	}
 
-	ctx.WriteJSON(200, filename)
+	ctx.WriteJSON(200, nextFilename)
+}
+
+func (p *Plugin) CheckPermissionsMW(ctx *httpserve.Context) {
+	filename := ctx.Param("filename")
+	partEnd := strings.Index(filename, ".")
+	if partEnd == -1 {
+		msg := fmt.Errorf("invalid filename <%s> does not have a part separator", filename)
+		ctx.WriteJSON(400, msg)
+		return
+	}
+
+	resource := filename[0:partEnd]
+	p.Jump.NewCheckPermissionsMW(resource, "")(ctx)
 }
