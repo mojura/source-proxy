@@ -43,6 +43,10 @@ func (p *Plugin) Load(env vroomy.Environment) (err error) {
 		return
 	}
 
+	if err = p.Jump.Permissions().SetPermissions("manage", "admins", jump.PermRWD); err != nil {
+		return
+	}
+
 	for _, schema := range schemas {
 		for _, pair := range schema.Permissions {
 			var action permissions.Action
@@ -55,7 +59,7 @@ func (p *Plugin) Load(env vroomy.Environment) (err error) {
 				action = permissions.ActionWrite
 			}
 
-			if err = p.Jump.Permissions().SetPermissions(pair.Resource, schema.Group, action); err != nil {
+			if err = p.Jump.SetPermission(pair.Resource, schema.Group, action, jump.PermRWD); err != nil {
 				return
 			}
 		}
