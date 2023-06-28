@@ -1,0 +1,2 @@
+autoCertDir = "autocert-secrets"
+autoCertHosts = ["myurl.com"]
