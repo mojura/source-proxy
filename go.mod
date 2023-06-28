@@ -7,7 +7,7 @@ require (
 	github.com/hatchify/closer v0.4.81
 	github.com/hatchify/errors v0.4.82
 	github.com/mojura/kiroku v0.10.2
-	github.com/vroomy-ext/digitalocean-s3-plugin v0.3.7
+	github.com/vroomy-ext/digitalocean-s3-plugin v0.3.8
 	github.com/vroomy-ext/jump-plugin v0.21.5
 	github.com/vroomy-ext/mojura-opts-plugin v0.3.2
 	github.com/vroomy/httpserve v0.10.0
@@ -36,7 +36,7 @@ require (
 	github.com/mojura/backend v0.2.1 // indirect
 	github.com/mojura/enkodo v0.5.6 // indirect
 	github.com/mojura/mojura v0.17.2 // indirect
-	github.com/mojura/sync-s3 v0.3.2 // indirect
+	github.com/mojura/sync-s3 v0.3.3 // indirect
 	golang.org/x/crypto v0.7.0 // indirect
 	golang.org/x/net v0.8.0 // indirect
 	golang.org/x/sys v0.9.0 // indirect
