@@ -87,7 +87,7 @@ func TestClient_GetNext(t *testing.T) {
 				err error
 			)
 
-			if got, err = testclient.GetNext(tt.args.ctx, tt.args.filename); (err != nil) != tt.wantErr {
+			if got, err = testclient.GetNext(tt.args.ctx, "", tt.args.filename); (err != nil) != tt.wantErr {
 				t.Errorf("Client.GetNext() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}

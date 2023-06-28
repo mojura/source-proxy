@@ -1,16 +1,19 @@
 package client
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
+
+	"github.com/mojura/kiroku"
 )
+
+var _ kiroku.Source = &Client{}
 
 func New(host, apiKey string) (cc *Client, err error) {
 	var u *url.URL
@@ -36,27 +39,43 @@ type Client struct {
 }
 
 func (c *Client) Get(ctx context.Context, filename string, fn func(io.Reader) error) (err error) {
+	filename = url.PathEscape(filename)
 	endpoint := fmt.Sprintf("/api/proxy/file/%s", filename)
 	err = c.request(ctx, "GET", endpoint, nil, fn)
-	return
+	switch {
+	case err == nil:
+		return
+	case strings.Contains(err.Error(), "NoSuchKey"):
+		return os.ErrNotExist
+	default:
+		return
+	}
 }
 
-func (c *Client) GetNext(ctx context.Context, lastFilename string) (filename string, err error) {
+// GetNext will get the next filename
+// Note: prefix is ignored for source proxy as it derives the prefix from the filename
+func (c *Client) GetNext(ctx context.Context, prefix, lastFilename string) (filename string, err error) {
+	if lastFilename == "" {
+		lastFilename = prefix
+	}
+
 	endpoint := fmt.Sprintf("/api/proxy/next/%s", lastFilename)
+
 	var resp apiResp
 	resp.Data = &filename
-	if err = c.request(ctx, "GET", endpoint, nil, func(r io.Reader) (err error) {
+	err = c.request(ctx, "GET", endpoint, nil, func(r io.Reader) (err error) {
 		return json.NewDecoder(r).Decode(&resp)
-	}); err != nil {
+	})
+
+	switch {
+	case err == nil:
+		return
+	case strings.Contains(err.Error(), "EOF"):
+		err = io.EOF
+		return
+	default:
 		return
 	}
-
-	if len(resp.Errors) > 0 {
-		err = errors.New(strings.Join(resp.Errors, "\n"))
-		return
-	}
-
-	return
 }
 
 func (c *Client) Import(ctx context.Context, filename string, w io.Writer) (err error) {
@@ -96,18 +115,4 @@ func (c *Client) request(ctx context.Context, method, endpoint string, body io.R
 	}
 
 	return fn(res.Body)
-}
-
-func handleError(res *http.Response) (err error) {
-	buf := bytes.NewBuffer(nil)
-	if _, err = io.Copy(buf, res.Body); err != nil {
-		return
-	}
-
-	return fmt.Errorf("error encountered (%d): %v", res.StatusCode, buf.String())
-}
-
-type apiResp struct {
-	Data   interface{} `json:"data"`
-	Errors []string    `json:"errors"`
 }
