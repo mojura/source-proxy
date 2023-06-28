@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"net/url"
 	"os"
 	"regexp"
 	"strings"
@@ -122,9 +123,9 @@ func (p *Plugin) GetNext(ctx *httpserve.Context) {
 	)
 
 	req := ctx.Request()
-	name := ctx.Param("name")
+	resource := ctx.Get("resource")
 	lastFilename := ctx.Param("filename")
-	if nextFilename, err = p.Source.GetNext(req.Context(), name, lastFilename); err != nil {
+	if nextFilename, err = p.Source.GetNext(req.Context(), resource, lastFilename); err != nil {
 		err = fmt.Errorf("error getting next filename: %v", err)
 		ctx.WriteJSON(400, err)
 		return
@@ -142,6 +143,14 @@ func (p *Plugin) CheckPermissionsMW(ctx *httpserve.Context) {
 		return
 	}
 
-	resource := filename[0:partEnd]
+	resource, err := url.PathUnescape(filename[0:partEnd])
+	if err != nil {
+		msg := fmt.Errorf("error unescaping filename: %v", err)
+		ctx.WriteJSON(400, msg)
+		return
+	}
+
+	resource = strings.Replace(resource, "_latestSnapshots/", "", 1)
+	ctx.Put("resource", resource)
 	p.Jump.NewCheckPermissionsMW(resource, "")(ctx)
 }
