@@ -32,7 +32,7 @@ type Plugin struct {
 // New ensures Profiles Database is built and open for access
 func (p *Plugin) Load(env vroomy.Environment) (err error) {
 	var f *os.File
-	if f, err = os.Open("groups.json"); err != nil {
+	if f, err = os.Open("./include/groups.json"); err != nil {
 		err = fmt.Errorf("error opening groups file: %v", err)
 		return
 	}

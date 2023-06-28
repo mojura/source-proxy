@@ -1,7 +1,7 @@
 /data
 /include/env.toml
 /include/autocert.toml
+/include/groups.json
 /source-proxy
-/groups.json
 /config.toml
 /autocert-secrets
