@@ -95,6 +95,12 @@ func (p *Plugin) Export(ctx *httpserve.Context) {
 		return
 	}
 
+	if _, err = f.Seek(0, io.SeekStart); err != nil {
+		err = fmt.Errorf("error seeking within temporary file: %v", err)
+		ctx.WriteJSON(500, err)
+		return
+	}
+
 	if err := p.Source.Export(req.Context(), filename, f); err != nil {
 		err = fmt.Errorf("error exporting: %v", err)
 		ctx.WriteJSON(400, err)
