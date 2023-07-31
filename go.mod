@@ -11,7 +11,7 @@ require (
 	github.com/vroomy-ext/jump-plugin v0.21.7
 	github.com/vroomy-ext/mojura-opts-plugin v0.3.2
 	github.com/vroomy/httpserve v0.10.0
-	github.com/vroomy/vroomy v0.17.0
+	github.com/vroomy/vroomy v0.17.1
 )
 
 require (
