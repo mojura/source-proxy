@@ -1,7 +1,11 @@
 /data
 /include/env.toml
+/include/env.*.toml
 /include/autocert.toml
 /groups.json
 /source-proxy
 /config.toml
 /autocert-secrets
+
+# Allow
+!/include/env.example.toml
