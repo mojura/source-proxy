@@ -1,11 +1,19 @@
+# Data directories
 /data
+/autocert-secrets
+
+# Include files
 /include/env.toml
 /include/env.*.toml
 /include/autocert.toml
-/groups.json
-/source-proxy
+
+# Config files
 /config.toml
-/autocert-secrets
+/apikeys.json
+/resources.json
+/groups.json
+
+/source-proxy
 
 # Allow
 !/include/env.example.toml
