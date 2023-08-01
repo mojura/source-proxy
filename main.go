@@ -8,11 +8,11 @@ import (
 	"github.com/vroomy/vroomy"
 
 	_ "github.com/vroomy-ext/digitalocean-s3-plugin"
-	_ "github.com/vroomy-ext/jump-plugin"
 	_ "github.com/vroomy-ext/mojura-opts-plugin"
 
-	_ "github.com/mojura/source-proxy/plugins/manage"
+	_ "github.com/mojura/source-proxy/plugins/apikeys"
 	_ "github.com/mojura/source-proxy/plugins/proxy"
+	_ "github.com/mojura/source-proxy/plugins/resources"
 )
 
 func main() {
