@@ -1,10 +1,4 @@
-# Private API
 [[group]]
 name = "api"
 httpPath = "/api"
-handlers = ["jump.SetUserMW"]
-
-# Public API
-[[group]]
-name = "apiPublic"
-httpPath = "/api"
+handlers = []
