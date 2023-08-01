@@ -3,12 +3,10 @@ module github.com/mojura/source-proxy
 go 1.20
 
 require (
-	github.com/gdbu/jump v0.21.6
 	github.com/hatchify/closer v0.4.81
 	github.com/hatchify/errors v0.4.82
 	github.com/mojura/kiroku v0.10.4
 	github.com/vroomy-ext/digitalocean-s3-plugin v0.3.8
-	github.com/vroomy-ext/jump-plugin v0.21.7
 	github.com/vroomy-ext/mojura-opts-plugin v0.3.2
 	github.com/vroomy/httpserve v0.10.0
 	github.com/vroomy/vroomy v0.17.1
@@ -21,13 +19,11 @@ require (
 	github.com/gdbu/atoms v1.0.1 // indirect
 	github.com/gdbu/bolt v1.4.0 // indirect
 	github.com/gdbu/bst v0.3.1 // indirect
-	github.com/gdbu/emailvalidator v0.5.0 // indirect
 	github.com/gdbu/queue v0.4.81 // indirect
 	github.com/gdbu/reflectio v0.1.3 // indirect
 	github.com/gdbu/scribe v0.5.3 // indirect
 	github.com/gdbu/stopwatch v0.5.0 // indirect
 	github.com/gdbu/stringset v0.2.0 // indirect
-	github.com/gdbu/uuid v0.1.0 // indirect
 	github.com/hatchify/atoms v0.4.79 // indirect
 	github.com/hatchify/colors v0.4.79 // indirect
 	github.com/hatchify/cron v0.4.82 // indirect
