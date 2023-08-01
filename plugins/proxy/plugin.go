@@ -4,15 +4,13 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"net/url"
 	"os"
 	"regexp"
-	"strings"
 	"sync"
 
-	"github.com/gdbu/jump"
-	"github.com/gdbu/jump/permissions"
 	"github.com/mojura/kiroku"
+	"github.com/mojura/source-proxy/libs/apikeys"
+	"github.com/mojura/source-proxy/libs/resources"
 	"github.com/vroomy/httpserve"
 	"github.com/vroomy/vroomy"
 )
@@ -34,8 +32,9 @@ type Plugin struct {
 	match *regexp.Regexp
 
 	// Backend
-	Jump   *jump.Jump    `vroomy:"jump"`
-	Source kiroku.Source `vroomy:"mojura-source"`
+	Source    kiroku.Source        `vroomy:"mojura-source"`
+	APIKeys   *apikeys.APIKeys     `vroomy:"apikeys"`
+	Resources *resources.Resources `vroomy:"resources"`
 }
 
 // New ensures Profiles Database is built and open for access
@@ -53,12 +52,6 @@ func (p *Plugin) Load(env vroomy.Environment) (err error) {
 		err = fmt.Errorf("error compiling match expression of <%s>", matchExpression)
 		return
 	}
-
-	err = p.Jump.Permissions().SetMultiPermissions("proxy",
-		permissions.NewPair("admins", jump.PermRWD),
-		permissions.NewPair("proxy-write", jump.PermRW),
-		permissions.NewPair("proxy-read", jump.PermR),
-	)
 
 	return
 }
@@ -141,22 +134,30 @@ func (p *Plugin) GetNext(ctx *httpserve.Context) {
 }
 
 func (p *Plugin) CheckPermissionsMW(ctx *httpserve.Context) {
+	var (
+		apikey string
+		err    error
+	)
+
+	if apikey, err = getAPIKey(ctx); err != nil {
+		ctx.WriteJSON(400, err)
+		return
+	}
+
+	var resource string
 	filename := ctx.Param("filename")
-	partEnd := strings.Index(filename, ".")
-	if partEnd == -1 {
-		msg := fmt.Errorf("invalid filename <%s> does not have a part separator", filename)
-		ctx.WriteJSON(400, msg)
+	if resource, err = getResource(filename); err != nil {
+		ctx.WriteJSON(400, err)
 		return
 	}
 
-	resource, err := url.PathUnescape(filename[0:partEnd])
-	if err != nil {
-		msg := fmt.Errorf("error unescaping filename: %v", err)
-		ctx.WriteJSON(400, msg)
+	method := ctx.Request().Method
+	groups := p.APIKeys.Groups(apikey)
+
+	if !p.Resources.Can(method, resource, groups...) {
+		ctx.WriteJSON(401, "forbidden")
 		return
 	}
 
-	resource = strings.Replace(resource, "_latestSnapshots/", "", 1)
 	ctx.Put("resource", resource)
-	p.Jump.NewCheckPermissionsMW(resource, "")(ctx)
 }
