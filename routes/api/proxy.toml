@@ -7,17 +7,17 @@ handlers = ["proxy.CheckPermissionsMW"]
 [[route]]
 method = "GET"
 group = "proxy"
-httpPath = "/file/:filename"
+httpPath = "/file/:prefix/:filename"
 handlers = ["proxy.Get"]
 
 [[route]]
 method = "GET"
 group = "proxy"
-httpPath = "/next/:filename"
+httpPath = "/next/:prefix/:filename"
 handlers = ["proxy.GetNext"]
 
 [[route]]
 method = "POST"
 group = "proxy"
-httpPath = "/:filename"
+httpPath = "/:prefix/:filename"
 handlers = ["proxy.Export"]

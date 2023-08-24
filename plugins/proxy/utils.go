@@ -32,7 +32,13 @@ func getAPIKey(ctx *httpserve.Context) (apikey string, err error) {
 	return
 }
 
-func getResource(filename string) (resource string, err error) {
+func getResource(prefix, filename string) (resource string, err error) {
+	if prefix != "_latestSnapshots" {
+		resource = prefix
+		return
+	}
+
+	resource = strings.Replace(filename, "_latestSnapshots/", "", 1)
 	partEnd := strings.Index(filename, ".")
 	if partEnd == -1 {
 		err = fmt.Errorf("invalid filename <%s> does not have a part separator", filename)
@@ -44,6 +50,5 @@ func getResource(filename string) (resource string, err error) {
 		return
 	}
 
-	resource = strings.Replace(resource, "_latestSnapshots/", "", 1)
 	return
 }

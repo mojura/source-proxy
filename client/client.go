@@ -1,6 +1,7 @@
 package client
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -38,9 +39,9 @@ type Client struct {
 	apiKey string
 }
 
-func (c *Client) Get(ctx context.Context, filename string, fn func(io.Reader) error) (err error) {
+func (c *Client) Get(ctx context.Context, prefix, filename string, fn func(io.Reader) error) (err error) {
 	filename = url.PathEscape(filename)
-	endpoint := fmt.Sprintf("/api/proxy/file/%s", filename)
+	endpoint := fmt.Sprintf("/api/proxy/file/%s/%s", prefix, filename)
 	err = c.request(ctx, "GET", endpoint, nil, fn)
 	switch {
 	case err == nil:
@@ -59,7 +60,7 @@ func (c *Client) GetNext(ctx context.Context, prefix, lastFilename string) (file
 		lastFilename = prefix
 	}
 
-	endpoint := fmt.Sprintf("/api/proxy/next/%s", lastFilename)
+	endpoint := fmt.Sprintf("/api/proxy/next/%s/%s", prefix, lastFilename)
 
 	var resp apiResp
 	resp.Data = &filename
@@ -78,16 +79,23 @@ func (c *Client) GetNext(ctx context.Context, prefix, lastFilename string) (file
 	}
 }
 
-func (c *Client) Import(ctx context.Context, filename string, w io.Writer) (err error) {
-	return c.Get(ctx, filename, func(r io.Reader) (err error) {
+func (c *Client) Import(ctx context.Context, prefix, filename string, w io.Writer) (err error) {
+	return c.Get(ctx, prefix, filename, func(r io.Reader) (err error) {
 		_, err = io.Copy(w, r)
 		return
 	})
 }
 
-func (c *Client) Export(ctx context.Context, filename string, r io.Reader) (err error) {
-	endpoint := fmt.Sprintf("/api/proxy/%s", filename)
-	err = c.request(ctx, "POST", endpoint, r, nil)
+func (c *Client) Export(ctx context.Context, prefix, filename string, r io.Reader) (newFilename string, err error) {
+	endpoint := fmt.Sprintf("/api/proxy/%s/%s", prefix, filename)
+
+	err = c.request(ctx, "POST", endpoint, r, func(r io.Reader) (err error) {
+		buf := bytes.NewBuffer(nil)
+		_, err = io.Copy(buf, r)
+		newFilename = buf.String()
+		return
+	})
+
 	return
 }
 

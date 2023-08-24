@@ -97,20 +97,23 @@ func (p *Plugin) Export(ctx *httpserve.Context) {
 		return
 	}
 
-	if err := p.Source.Export(req.Context(), filename, f); err != nil {
+	var newFilename string
+	prefix := ctx.Get("prefix")
+	if newFilename, err = p.Source.Export(req.Context(), prefix, filename, f); err != nil {
 		err = fmt.Errorf("error exporting: %v", err)
 		ctx.WriteJSON(400, err)
 		return
 	}
 
-	ctx.WriteNoContent()
+	ctx.WriteString(200, "text/plain", newFilename)
 }
 
 // Get will get a file by name
 func (p *Plugin) Get(ctx *httpserve.Context) {
 	req := ctx.Request()
+	prefix := ctx.Param("prefix")
 	filename := ctx.Param("filename")
-	if err := p.Source.Import(req.Context(), filename, ctx.Writer()); err != nil {
+	if err := p.Source.Import(req.Context(), prefix, filename, ctx.Writer()); err != nil {
 		err = fmt.Errorf("error getting: %v", err)
 		ctx.WriteJSON(400, err)
 		return
@@ -125,9 +128,9 @@ func (p *Plugin) GetNext(ctx *httpserve.Context) {
 	)
 
 	req := ctx.Request()
-	resource := ctx.Get("resource")
+	prefix := ctx.Get("prefix")
 	lastFilename := ctx.Param("filename")
-	if nextFilename, err = p.Source.GetNext(req.Context(), resource, lastFilename); err != nil {
+	if nextFilename, err = p.Source.GetNext(req.Context(), prefix, lastFilename); err != nil {
 		err = fmt.Errorf("error getting next filename: %v", err)
 		ctx.WriteJSON(400, err)
 		return
@@ -148,8 +151,9 @@ func (p *Plugin) CheckPermissionsMW(ctx *httpserve.Context) {
 	}
 
 	var resource string
+	prefix := ctx.Param("prefix")
 	filename := ctx.Param("filename")
-	if resource, err = getResource(filename); err != nil {
+	if resource, err = getResource(prefix, filename); err != nil {
 		ctx.WriteJSON(400, err)
 		return
 	}

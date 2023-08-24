@@ -26,6 +26,7 @@ func TestMain(m *testing.M) {
 func TestClient_Export(t *testing.T) {
 	type args struct {
 		ctx      context.Context
+		prefix   string
 		filename string
 		r        io.Reader
 	}
@@ -39,6 +40,7 @@ func TestClient_Export(t *testing.T) {
 			name: "basic",
 			args: args{
 				ctx:      context.Background(),
+				prefix:   "test_prefix",
 				filename: "bids.0000.chunk.moj",
 				r:        strings.NewReader("foo bar baz"),
 			},
@@ -48,7 +50,7 @@ func TestClient_Export(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := testclient.Export(tt.args.ctx, tt.args.filename, tt.args.r); (err != nil) != tt.wantErr {
+			if _, err := testclient.Export(tt.args.ctx, tt.args.prefix, tt.args.filename, tt.args.r); (err != nil) != tt.wantErr {
 				t.Errorf("Client.Export() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
