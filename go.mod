@@ -5,8 +5,8 @@ go 1.20
 require (
 	github.com/hatchify/closer v0.4.81
 	github.com/hatchify/errors v0.4.82
-	github.com/mojura/kiroku v0.10.4
-	github.com/vroomy-ext/digitalocean-s3-plugin v0.3.8
+	github.com/mojura/kiroku v0.12.1
+	github.com/vroomy-ext/digitalocean-s3-plugin v0.5.3
 	github.com/vroomy-ext/mojura-opts-plugin v0.3.2
 	github.com/vroomy/httpserve v0.10.0
 	github.com/vroomy/vroomy v0.17.1
@@ -30,9 +30,9 @@ require (
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/mojura-backends/bolt v0.2.1 // indirect
 	github.com/mojura/backend v0.2.1 // indirect
-	github.com/mojura/enkodo v0.5.6 // indirect
+	github.com/mojura/enkodo v0.5.7 // indirect
 	github.com/mojura/mojura v0.17.4 // indirect
-	github.com/mojura/sync-s3 v0.3.3 // indirect
+	github.com/mojura/sync-s3 v0.5.1 // indirect
 	golang.org/x/crypto v0.7.0 // indirect
 	golang.org/x/net v0.8.0 // indirect
 	golang.org/x/sys v0.9.0 // indirect
