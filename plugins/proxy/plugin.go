@@ -98,7 +98,7 @@ func (p *Plugin) Export(ctx *httpserve.Context) {
 	}
 
 	var newFilename string
-	prefix := ctx.Get("prefix")
+	prefix := ctx.Param("prefix")
 	if newFilename, err = p.Source.Export(req.Context(), prefix, filename, f); err != nil {
 		err = fmt.Errorf("error exporting: %v", err)
 		ctx.WriteJSON(400, err)
@@ -128,14 +128,17 @@ func (p *Plugin) GetNext(ctx *httpserve.Context) {
 	)
 
 	req := ctx.Request()
-	prefix := ctx.Get("prefix")
+	prefix := ctx.Param("prefix")
 	lastFilename := ctx.Param("filename")
+	fmt.Println("URL", ctx.Request().URL, ctx.Params)
+	fmt.Printf("Getting next <%s> <%s> \n", prefix, lastFilename)
 	if nextFilename, err = p.Source.GetNext(req.Context(), prefix, lastFilename); err != nil {
 		err = fmt.Errorf("error getting next filename: %v", err)
 		ctx.WriteJSON(400, err)
 		return
 	}
 
+	fmt.Printf("Next filename <%s>\n", nextFilename)
 	ctx.WriteJSON(200, nextFilename)
 }
 
