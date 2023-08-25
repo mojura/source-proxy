@@ -130,15 +130,12 @@ func (p *Plugin) GetNext(ctx *httpserve.Context) {
 	req := ctx.Request()
 	prefix := ctx.Param("prefix")
 	lastFilename := ctx.Param("filename")
-	fmt.Println("URL", ctx.Request().URL, ctx.Params)
-	fmt.Printf("Getting next <%s> <%s> \n", prefix, lastFilename)
 	if nextFilename, err = p.Source.GetNext(req.Context(), prefix, lastFilename); err != nil {
 		err = fmt.Errorf("error getting next filename: %v", err)
 		ctx.WriteJSON(400, err)
 		return
 	}
 
-	fmt.Printf("Next filename <%s>\n", nextFilename)
 	ctx.WriteJSON(200, nextFilename)
 }
 
