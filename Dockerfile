@@ -7,5 +7,4 @@ COPY ./apikeys.json ./apikeys.json
 COPY ./resources.json ./resources.json
 RUN go install github.com/mojura/source-proxy@v0.2.4
 EXPOSE 80
-EXPOSE 443
 ENTRYPOINT ["source-proxy"]
