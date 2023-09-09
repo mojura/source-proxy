@@ -10,6 +10,7 @@ import (
 	_ "github.com/vroomy-ext/digitalocean-s3-plugin"
 
 	_ "github.com/mojura/source-proxy/plugins/apikeys"
+	_ "github.com/mojura/source-proxy/plugins/health"
 	_ "github.com/mojura/source-proxy/plugins/proxy"
 	_ "github.com/mojura/source-proxy/plugins/resources"
 )

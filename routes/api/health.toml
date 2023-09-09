@@ -1,0 +1,11 @@
+[[group]]
+name = "health"
+group = "api"
+httpPath = "/health"
+handlers = []
+
+[[route]]
+group = "health"
+method = "GET"
+httpPath = "/ping"
+handlers = ["health.Ping"]
