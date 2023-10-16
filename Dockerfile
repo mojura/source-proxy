@@ -5,6 +5,6 @@ COPY ./routes ./routes
 COPY ./config.toml ./config.toml
 COPY ./apikeys.json ./apikeys.json
 COPY ./resources.json ./resources.json
-RUN go install github.com/mojura/source-proxy@v0.2.4
+RUN go install github.com/mojura/source-proxy@v0.2.6
 EXPOSE 80
 ENTRYPOINT ["source-proxy"]
