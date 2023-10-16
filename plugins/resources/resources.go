@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"os"
+	"path"
 
 	"github.com/vroomy/vroomy"
 
@@ -26,8 +27,15 @@ type Plugin struct {
 
 // Load will initialize the APIKeys client
 func (p *Plugin) Load(env vroomy.Environment) (err error) {
+	configPath := env.Get("CONFIG_PATH")
+	if configPath == "" {
+		configPath = "./"
+	}
+
+	fullPath := path.Join(configPath, "resources.json")
+
 	var f *os.File
-	if f, err = os.Open("./resources.json"); err != nil {
+	if f, err = os.Open(fullPath); err != nil {
 		return
 	}
 	defer f.Close()

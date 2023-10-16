@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"log"
+	"os"
+	"path"
 
 	"github.com/hatchify/closer"
 	"github.com/vroomy/vroomy"
@@ -21,7 +23,13 @@ func main() {
 		err error
 	)
 
-	if svc, err = vroomy.New("./config.toml"); err != nil {
+	configPath := os.Getenv("CONFIG_PATH")
+	if len(configPath) == 0 {
+		configPath = "./"
+	}
+
+	fullPath := path.Join(configPath, "config.toml")
+	if svc, err = vroomy.New(fullPath); err != nil {
 		log.Fatal(err)
 	}
 
