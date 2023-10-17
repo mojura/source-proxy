@@ -4,17 +4,26 @@ import (
 	"errors"
 	"fmt"
 	"net/url"
-	"strconv"
 	"strings"
 	"time"
 
+	"github.com/mojura/kiroku"
 	"github.com/vroomy/httpserve"
 )
 
 func updateFilename(filename string) string {
+	var (
+		f   kiroku.Filename
+		err error
+	)
+
+	if f, err = kiroku.ParseFilename(filename); err != nil {
+		return filename
+	}
+
 	unix := time.Now().UnixNano()
-	unixStr := strconv.FormatInt(unix, 10)
-	return p.match.ReplaceAllString(filename, unixStr)
+	f.CreatedAt = unix
+	return f.String()
 }
 
 func getAPIKey(ctx *httpserve.Context) (apikey string, err error) {
