@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/hatchify/closer v0.4.81
 	github.com/hatchify/errors v0.4.82
-	github.com/mojura/kiroku v0.12.2
+	github.com/mojura/kiroku v0.12.7
 	github.com/vroomy-ext/digitalocean-s3-plugin v0.5.4
 	github.com/vroomy/httpserve v0.10.0
 	github.com/vroomy/vroomy v0.17.1
