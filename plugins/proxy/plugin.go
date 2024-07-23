@@ -20,7 +20,7 @@ var p Plugin
 
 const defaultMatch = "[0-9]+"
 
-var forbidden = errors.New("forbidden")
+var errForbidden = errors.New("forbidden")
 
 func init() {
 	if err := vroomy.Register("proxy", &p); err != nil {
@@ -162,7 +162,8 @@ func (p *Plugin) CheckPermissionsMW(ctx *httpserve.Context) {
 	groups := p.APIKeys.Groups(apikey)
 
 	if !p.Resources.Can(method, resource, groups...) {
-		ctx.WriteJSON(401, forbidden)
+		fmt.Printf("forbidden request Prefix: <%s> / Filename: <%s> / Resource <%s>\n", prefix, filename, resource)
+		ctx.WriteJSON(401, errForbidden)
 		return
 	}
 
