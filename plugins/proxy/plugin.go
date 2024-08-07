@@ -162,7 +162,7 @@ func (p *Plugin) CheckPermissionsMW(ctx *httpserve.Context) {
 	groups := p.APIKeys.Groups(apikey)
 
 	if !p.Resources.Can(method, resource, groups...) {
-		fmt.Printf("forbidden request Prefix: <%s> / Filename: <%s> / Resource <%s>\n", prefix, filename, resource)
+		fmt.Printf("forbidden request: Prefix: <%s> / Filename: <%s> / Resource <%s> / Last 4 API Key <%s>\n", prefix, filename, resource, apikey[len(apikey)-4:])
 		ctx.WriteJSON(401, errForbidden)
 		return
 	}
