@@ -3,7 +3,9 @@ package proxy
 import (
 	"errors"
 	"fmt"
+	"io"
 	"net/url"
+	"os"
 	"strings"
 	"time"
 
@@ -60,4 +62,27 @@ func getResource(prefix, filename string) (resource string, err error) {
 	}
 
 	return
+}
+
+func copyToTemp(r io.Reader, fn func(f *os.File) error) (err error) {
+	var f *os.File
+	if f, err = os.CreateTemp("", "exporting"); err != nil {
+		err = fmt.Errorf("error creating temporary file: %v", err)
+		return
+	}
+	name := f.Name()
+	defer os.Remove(name)
+	defer f.Close()
+
+	if _, err = io.Copy(f, r); err != nil {
+		err = fmt.Errorf("error copying to temporary file: %v", err)
+		return
+	}
+
+	if _, err = f.Seek(0, io.SeekStart); err != nil {
+		err = fmt.Errorf("error seeking within temporary file: %v", err)
+		return
+	}
+
+	return fn(f)
 }
