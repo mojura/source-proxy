@@ -3,9 +3,7 @@ package proxy
 import (
 	"errors"
 	"fmt"
-	"io"
 	"log"
-	"os"
 	"regexp"
 	"sync"
 
@@ -68,38 +66,17 @@ func (p *Plugin) Backend() interface{} {
 func (p *Plugin) Export(ctx *httpserve.Context) {
 	p.mux.Lock()
 	defer p.mux.Unlock()
+
 	req := ctx.Request()
 	filename := updateFilename(ctx.Param("filename"))
+	prefix := ctx.Param("prefix")
 
 	var (
-		f   *os.File
-		err error
+		newFilename string
+		err         error
 	)
 
-	if f, err = os.CreateTemp("", "exporting"); err != nil {
-		err = fmt.Errorf("error creating temporary file: %v", err)
-		ctx.WriteJSON(400, err)
-		return
-	}
-	name := f.Name()
-	defer os.Remove(name)
-	defer f.Close()
-
-	if _, err = io.Copy(f, req.Body); err != nil {
-		err = fmt.Errorf("error copying to temporary file: %v", err)
-		ctx.WriteJSON(400, err)
-		return
-	}
-
-	if _, err = f.Seek(0, io.SeekStart); err != nil {
-		err = fmt.Errorf("error seeking within temporary file: %v", err)
-		ctx.WriteJSON(500, err)
-		return
-	}
-
-	var newFilename string
-	prefix := ctx.Param("prefix")
-	if newFilename, err = p.Source.Export(req.Context(), prefix, filename, f); err != nil {
+	if newFilename, err = p.Source.Export(req.Context(), prefix, filename, req.Body); err != nil {
 		err = fmt.Errorf("error exporting: %v", err)
 		ctx.WriteJSON(400, err)
 		return
