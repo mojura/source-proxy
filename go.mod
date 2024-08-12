@@ -9,6 +9,7 @@ require (
 	github.com/vroomy-ext/digitalocean-s3-plugin v0.5.4
 	github.com/vroomy/httpserve v0.10.0
 	github.com/vroomy/vroomy v0.17.1
+	go.uber.org/automaxprocs v1.5.3
 )
 
 require (
