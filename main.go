@@ -9,6 +9,8 @@ import (
 	"github.com/hatchify/closer"
 	"github.com/vroomy/vroomy"
 
+	_ "go.uber.org/automaxprocs"
+
 	_ "github.com/vroomy-ext/digitalocean-s3-plugin"
 
 	_ "github.com/mojura/source-proxy/plugins/apikeys"
