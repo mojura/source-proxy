@@ -64,12 +64,11 @@ func (p *Plugin) Backend() interface{} {
 
 // Ingest will ingest logs and set IDs if necessary
 func (p *Plugin) Export(ctx *httpserve.Context) {
-	p.mux.Lock()
-	defer p.mux.Unlock()
-
 	req := ctx.Request()
-	filename := updateFilename(ctx.Param("filename"))
 	prefix := ctx.Param("prefix")
+	p.mux.Lock()
+	filename := updateFilename(ctx.Param("filename"))
+	p.mux.Unlock()
 
 	var (
 		newFilename string
