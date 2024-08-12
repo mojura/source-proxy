@@ -6,7 +6,7 @@ require (
 	github.com/hatchify/closer v0.4.81
 	github.com/hatchify/errors v0.4.82
 	github.com/mojura/kiroku v0.12.11
-	github.com/vroomy-ext/digitalocean-s3-plugin v0.6.0
+	github.com/vroomy-ext/digitalocean-s3-plugin v0.6.1
 	github.com/vroomy/httpserve v0.10.1
 	github.com/vroomy/vroomy v0.17.3
 	go.uber.org/automaxprocs v1.5.3
@@ -27,7 +27,7 @@ require (
 	github.com/hatchify/cron v0.4.82 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/mojura/enkodo v0.5.7 // indirect
-	github.com/mojura/sync-s3 v0.6.0 // indirect
+	github.com/mojura/sync-s3 v0.6.1 // indirect
 	golang.org/x/crypto v0.17.0 // indirect
 	golang.org/x/net v0.17.0 // indirect
 	golang.org/x/sys v0.15.0 // indirect
