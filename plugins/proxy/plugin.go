@@ -11,6 +11,8 @@ import (
 	"github.com/mojura/kiroku"
 	"github.com/mojura/source-proxy/libs/apikeys"
 	"github.com/mojura/source-proxy/libs/resources"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/vroomy/httpserve"
 	"github.com/vroomy/vroomy"
 )
@@ -37,6 +39,18 @@ type Plugin struct {
 	Source    kiroku.Source        `vroomy:"mojura-source"`
 	APIKeys   *apikeys.APIKeys     `vroomy:"apikeys"`
 	Resources *resources.Resources `vroomy:"resources"`
+
+	getsStarted   prometheus.Counter
+	getsCompleted prometheus.Counter
+	getsErrored   prometheus.Counter
+
+	getNextsStarted   prometheus.Counter
+	getNextsCompleted prometheus.Counter
+	getNextsErrored   prometheus.Counter
+
+	exportsStarted   prometheus.Counter
+	exportsCompleted prometheus.Counter
+	exportsErrored   prometheus.Counter
 }
 
 // New ensures Profiles Database is built and open for access
@@ -55,6 +69,50 @@ func (p *Plugin) Load(env vroomy.Environment) (err error) {
 		return
 	}
 
+	p.getsStarted = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "source_proxy_gets_started_total",
+		Help: "The number of Get events started",
+	})
+
+	p.getsCompleted = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "source_proxy_gets_completed_total",
+		Help: "The number of Get events completed",
+	})
+
+	p.getsErrored = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "source_proxy_gets_errored_total",
+		Help: "The number of Get events with errors",
+	})
+
+	p.getNextsStarted = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "source_proxy_get_nexts_started_total",
+		Help: "The number of GetNext events started",
+	})
+
+	p.getNextsCompleted = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "source_proxy_get_nexts_completed_total",
+		Help: "The number of GetNext events completed",
+	})
+
+	p.getNextsErrored = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "source_proxy_get_nexts_errored_total",
+		Help: "The number of GetNext events with errors",
+	})
+
+	p.exportsStarted = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "source_proxy_exports_started_total",
+		Help: "The number of Export events started",
+	})
+
+	p.exportsCompleted = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "source_proxy_exports_completed_total",
+		Help: "The number of Export events completed",
+	})
+
+	p.exportsErrored = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "source_proxy_exports_errored_total",
+		Help: "The number of exExportport events with errors",
+	})
 	return
 }
 
@@ -70,6 +128,7 @@ func (p *Plugin) Export(ctx *httpserve.Context) {
 		err         error
 	)
 
+	p.exportsStarted.Add(1)
 	req := ctx.Request()
 	prefix := ctx.Param("prefix")
 	p.mux.Lock()
@@ -86,22 +145,28 @@ func (p *Plugin) Export(ctx *httpserve.Context) {
 		return
 	}); err != nil {
 		ctx.WriteJSON(400, err)
+		p.exportsErrored.Add(1)
 		return
 	}
 
 	ctx.WriteString(200, "text/plain", newFilename)
+	p.exportsCompleted.Add(1)
 }
 
 // Get will get a file by name
 func (p *Plugin) Get(ctx *httpserve.Context) {
+	p.getsStarted.Add(1)
 	req := ctx.Request()
 	prefix := ctx.Param("prefix")
 	filename := ctx.Param("filename")
 	if err := p.Source.Import(req.Context(), prefix, filename, ctx.Writer()); err != nil {
 		err = fmt.Errorf("error getting: %v", err)
 		ctx.WriteJSON(400, err)
+		p.getsErrored.Add(1)
 		return
 	}
+
+	p.getsCompleted.Add(1)
 }
 
 // Get will get a file by name
@@ -111,16 +176,19 @@ func (p *Plugin) GetNext(ctx *httpserve.Context) {
 		err          error
 	)
 
+	p.getNextsStarted.Add(1)
 	req := ctx.Request()
 	prefix := ctx.Param("prefix")
 	lastFilename := ctx.Param("filename")
 	if nextFilename, err = p.Source.GetNext(req.Context(), prefix, lastFilename); err != nil {
 		err = fmt.Errorf("error getting next filename: %v", err)
 		ctx.WriteJSON(400, err)
+		p.getNextsErrored.Add(1)
 		return
 	}
 
 	ctx.WriteJSON(200, nextFilename)
+	p.getNextsCompleted.Add(1)
 }
 
 func (p *Plugin) CheckPermissionsMW(ctx *httpserve.Context) {
