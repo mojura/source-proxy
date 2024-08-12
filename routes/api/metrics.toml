@@ -2,4 +2,4 @@
 group = ""
 method = "GET"
 httpPath = "/metrics"
-handlers = ["metrics.Metrics"]
+handlers = ["prometheus.Metrics"]
