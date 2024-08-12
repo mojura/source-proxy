@@ -12,6 +12,7 @@ import (
 	_ "go.uber.org/automaxprocs"
 
 	_ "github.com/vroomy-ext/digitalocean-s3-plugin"
+	_ "github.com/vroomy-ext/prometheus-plugin"
 
 	_ "github.com/mojura/source-proxy/plugins/apikeys"
 	_ "github.com/mojura/source-proxy/plugins/health"
