@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"os"
 	"regexp"
 	"sync"
 
@@ -64,19 +65,26 @@ func (p *Plugin) Backend() interface{} {
 
 // Ingest will ingest logs and set IDs if necessary
 func (p *Plugin) Export(ctx *httpserve.Context) {
+	var (
+		newFilename string
+		err         error
+	)
+
 	req := ctx.Request()
 	prefix := ctx.Param("prefix")
 	p.mux.Lock()
 	filename := updateFilename(ctx.Param("filename"))
 	p.mux.Unlock()
 
-	var (
-		newFilename string
-		err         error
-	)
+	// We need to copy the request body to a file so that the s3 library can determine the max content length
+	if err = copyToTemp(req.Body, func(f *os.File) (err error) {
+		if newFilename, err = p.Source.Export(req.Context(), prefix, filename, f); err != nil {
+			err = fmt.Errorf("error exporting: %v", err)
+			return
+		}
 
-	if newFilename, err = p.Source.Export(req.Context(), prefix, filename, req.Body); err != nil {
-		err = fmt.Errorf("error exporting: %v", err)
+		return
+	}); err != nil {
 		ctx.WriteJSON(400, err)
 		return
 	}
