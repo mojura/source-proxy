@@ -1,0 +1,5 @@
+[[route]]
+group = ""
+method = "GET"
+httpPath = "/metrics"
+handlers = ["metrics.Metrics"]
