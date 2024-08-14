@@ -145,6 +145,7 @@ func (p *Plugin) Export(ctx *httpserve.Context) {
 		return
 	}); err != nil {
 		ctx.WriteJSON(400, err)
+		log.Printf("error exporting prefix %v: %v req: %v", prefix, err, req)
 		p.exportsErrored.Add(1)
 		return
 	}
@@ -160,6 +161,7 @@ func (p *Plugin) Get(ctx *httpserve.Context) {
 	prefix := ctx.Param("prefix")
 	filename := ctx.Param("filename")
 	if err := p.Source.Import(req.Context(), prefix, filename, ctx.Writer()); err != nil {
+		log.Printf("error getting: %v: %v req: %v", prefix, err, req)
 		err = fmt.Errorf("error getting: %v", err)
 		ctx.WriteJSON(400, err)
 		p.getsErrored.Add(1)
@@ -181,6 +183,7 @@ func (p *Plugin) GetNext(ctx *httpserve.Context) {
 	prefix := ctx.Param("prefix")
 	lastFilename := ctx.Param("filename")
 	if nextFilename, err = p.Source.GetNext(req.Context(), prefix, lastFilename); err != nil {
+		log.Printf("error getting next filename: %v: %v req: %v", prefix, err, req)
 		err = fmt.Errorf("error getting next filename: %v", err)
 		ctx.WriteJSON(400, err)
 		p.getNextsErrored.Add(1)
