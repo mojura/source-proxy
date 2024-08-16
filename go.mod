@@ -30,6 +30,7 @@ require (
 	github.com/hatchify/colors v0.4.79 // indirect
 	github.com/hatchify/cron v0.4.82 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
+	github.com/klauspost/compress v1.17.9 // indirect
 	github.com/mojura/enkodo v0.5.7 // indirect
 	github.com/mojura/sync-s3 v0.6.2 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
