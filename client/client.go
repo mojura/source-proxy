@@ -86,10 +86,9 @@ func (c *Client) GetNextList(ctx context.Context, prefix, lastFilename string, m
 		lastFilename = prefix
 	}
 
-	endpoint := fmt.Sprintf("/api/proxy/nextList/%s/%s", prefix, lastFilename)
-
 	var resp apiResp
 	resp.Data = &filenames
+	endpoint := fmt.Sprintf("/api/proxy/nextList/%s/%s/%d", prefix, lastFilename, maxKeys)
 	err = c.request(ctx, "GET", endpoint, nil, func(r io.Reader) (err error) {
 		return json.NewDecoder(r).Decode(&resp)
 	})
