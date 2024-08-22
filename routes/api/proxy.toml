@@ -17,6 +17,12 @@ httpPath = "/next/:prefix/:filename"
 handlers = ["proxy.GetNext"]
 
 [[route]]
+method = "GET"
+group = "proxy"
+httpPath = "/nextList/:prefix/:filename"
+handlers = ["proxy.GetNextList"]
+
+[[route]]
 method = "POST"
 group = "proxy"
 httpPath = "/:prefix/:filename"
