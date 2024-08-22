@@ -19,7 +19,7 @@ handlers = ["proxy.GetNext"]
 [[route]]
 method = "GET"
 group = "proxy"
-httpPath = "/nextList/:prefix/:filename"
+httpPath = "/nextList/:prefix/:filename/:maxKeys"
 handlers = ["proxy.GetNextList"]
 
 [[route]]
