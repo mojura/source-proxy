@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"regexp"
+	"strconv"
 	"sync"
 
 	"github.com/mojura/kiroku"
@@ -48,6 +49,10 @@ type Plugin struct {
 	getNextsStarted   prometheus.Counter
 	getNextsCompleted prometheus.Counter
 	getNextsErrored   prometheus.Counter
+
+	getNextListsStarted   prometheus.Counter
+	getNextListsCompleted prometheus.Counter
+	getNextListsErrored   prometheus.Counter
 
 	exportsStarted   prometheus.Counter
 	exportsCompleted prometheus.Counter
@@ -93,6 +98,21 @@ func (p *Plugin) Load(env vroomy.Environment) (err error) {
 	p.getNextsCompleted = promauto.NewCounter(prometheus.CounterOpts{
 		Name: "source_proxy_get_nexts_completed_total",
 		Help: "The number of GetNext events completed",
+	})
+
+	p.getNextListsErrored = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "source_proxy_get_next_lists_errored_total",
+		Help: "The number of GetNextList events with errors",
+	})
+
+	p.getNextListsStarted = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "source_proxy_get_next_lists_started_total",
+		Help: "The number of GetNextList events started",
+	})
+
+	p.getNextListsCompleted = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "source_proxy_get_next_lists_completed_total",
+		Help: "The number of GetNextList events completed",
 	})
 
 	p.getNextsErrored = promauto.NewCounter(prometheus.CounterOpts{
@@ -198,6 +218,40 @@ func (p *Plugin) GetNext(ctx *httpserve.Context) {
 
 	ctx.WriteJSON(200, nextFilename)
 	p.getNextsCompleted.Add(1)
+}
+
+// GetNextList will get a list of next files
+func (p *Plugin) GetNextList(ctx *httpserve.Context) {
+	var (
+		nextFilenames []string
+		err           error
+	)
+
+	p.getNextListsStarted.Inc()
+	req := ctx.Request()
+	prefix := ctx.Param("prefix")
+	lastFilename := ctx.Param("filename")
+	maxKeysStr := ctx.Param("maxKeys")
+
+	var maxKeys int64
+	if maxKeys, err = strconv.ParseInt(maxKeysStr, 10, 64); err != nil {
+		log.Printf("error parsing maxKeys parameter <%s>: %v", maxKeysStr, err)
+		err = fmt.Errorf("error parsing maxKeys parameter: %v", err)
+		ctx.WriteJSON(400, err)
+		p.getNextsErrored.Add(1)
+		return
+	}
+
+	if nextFilenames, err = p.Source.GetNextList(req.Context(), prefix, lastFilename, maxKeys); err != nil {
+		log.Printf("error getting next filename: %v: %v req: %v", prefix, err, req)
+		err = fmt.Errorf("error getting next filename: %v", err)
+		ctx.WriteJSON(400, err)
+		p.getNextsErrored.Add(1)
+		return
+	}
+
+	ctx.WriteJSON(200, nextFilenames)
+	p.getNextsCompleted.Inc()
 }
 
 func (p *Plugin) CheckPermissionsMW(ctx *httpserve.Context) {
