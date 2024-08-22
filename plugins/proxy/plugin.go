@@ -3,6 +3,7 @@ package proxy
 import (
 	"errors"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"regexp"
@@ -188,6 +189,11 @@ func (p *Plugin) GetNext(ctx *httpserve.Context) {
 		ctx.WriteJSON(400, err)
 		p.getNextsErrored.Add(1)
 		return
+	}
+
+	if lastFilename >= nextFilename {
+		ctx.WriteJSON(400, io.EOF)
+		p.getNextsErrored.Add(1)
 	}
 
 	ctx.WriteJSON(200, nextFilename)
