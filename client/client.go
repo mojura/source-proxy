@@ -79,6 +79,32 @@ func (c *Client) GetNext(ctx context.Context, prefix, lastFilename string) (file
 	}
 }
 
+// GetNext will get the next filename
+// Note: prefix is ignored for source proxy as it derives the prefix from the filename
+func (c *Client) GetNextList(ctx context.Context, prefix, lastFilename string, maxKeys int64) (filenames []string, err error) {
+	if lastFilename == "" {
+		lastFilename = prefix
+	}
+
+	endpoint := fmt.Sprintf("/api/proxy/nextList/%s/%s", prefix, lastFilename)
+
+	var resp apiResp
+	resp.Data = &filenames
+	err = c.request(ctx, "GET", endpoint, nil, func(r io.Reader) (err error) {
+		return json.NewDecoder(r).Decode(&resp)
+	})
+
+	switch {
+	case err == nil:
+		return
+	case strings.Contains(err.Error(), "EOF"):
+		err = io.EOF
+		return
+	default:
+		return
+	}
+}
+
 func (c *Client) Import(ctx context.Context, prefix, filename string, w io.Writer) (err error) {
 	return c.Get(ctx, prefix, filename, func(r io.Reader) (err error) {
 		_, err = io.Copy(w, r)
