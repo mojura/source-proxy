@@ -238,7 +238,7 @@ func (p *Plugin) GetNextList(ctx *httpserve.Context) {
 		log.Printf("error parsing maxKeys parameter <%s>: %v", maxKeysStr, err)
 		err = fmt.Errorf("error parsing maxKeys parameter: %v", err)
 		ctx.WriteJSON(400, err)
-		p.getNextsErrored.Add(1)
+		p.getNextListsErrored.Add(1)
 		return
 	}
 
@@ -246,12 +246,12 @@ func (p *Plugin) GetNextList(ctx *httpserve.Context) {
 		log.Printf("error getting next filename: %v: %v req: %v", prefix, err, req)
 		err = fmt.Errorf("error getting next filename: %v", err)
 		ctx.WriteJSON(400, err)
-		p.getNextsErrored.Add(1)
+		p.getNextListsErrored.Add(1)
 		return
 	}
 
 	ctx.WriteJSON(200, nextFilenames)
-	p.getNextsCompleted.Inc()
+	p.getNextListsCompleted.Inc()
 }
 
 func (p *Plugin) CheckPermissionsMW(ctx *httpserve.Context) {
