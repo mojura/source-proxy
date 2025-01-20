@@ -104,6 +104,26 @@ func (c *Client) GetNextList(ctx context.Context, prefix, lastFilename string, m
 	}
 }
 
+func (c *Client) GetHead(ctx context.Context, prefix, filename string) (info kiroku.Info, err error) {
+	filename = url.PathEscape(filename)
+	endpoint := fmt.Sprintf("/api/proxy/file/%s/%s", prefix, filename)
+	var resp apiResp
+	resp.Data = &info
+	err = c.request(ctx, "HEAD", endpoint, nil, func(r io.Reader) (err error) {
+		return json.NewDecoder(r).Decode(&resp)
+	})
+
+	switch {
+	case err == nil:
+		return
+	case strings.Contains(err.Error(), "NoSuchKey"):
+		err = os.ErrNotExist
+		return
+	default:
+		return
+	}
+}
+
 func (c *Client) Import(ctx context.Context, prefix, filename string, w io.Writer) (err error) {
 	return c.Get(ctx, prefix, filename, func(r io.Reader) (err error) {
 		_, err = io.Copy(w, r)
