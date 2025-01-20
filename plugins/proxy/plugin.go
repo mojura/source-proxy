@@ -54,6 +54,10 @@ type Plugin struct {
 	getNextListsCompleted prometheus.Counter
 	getNextListsErrored   prometheus.Counter
 
+	getHeadStarted   prometheus.Counter
+	getHeadCompleted prometheus.Counter
+	getHeadErrored   prometheus.Counter
+
 	exportsStarted   prometheus.Counter
 	exportsCompleted prometheus.Counter
 	exportsErrored   prometheus.Counter
@@ -252,6 +256,30 @@ func (p *Plugin) GetNextList(ctx *httpserve.Context) {
 
 	ctx.WriteJSON(200, nextFilenames)
 	p.getNextsCompleted.Inc()
+}
+
+// GetHead will get the info for a file
+func (p *Plugin) GetHead(ctx *httpserve.Context) {
+	var (
+		info kiroku.Info
+		err  error
+	)
+
+	p.getHeadStarted.Inc()
+	req := ctx.Request()
+	prefix := ctx.Param("prefix")
+	filename := ctx.Param("filename")
+
+	if info, err = p.Source.GetHead(req.Context(), prefix, filename); err != nil {
+		log.Printf("error getting head for filename: %v: %v req: %v", prefix, err, req)
+		err = fmt.Errorf("error getting head for filename: %v", err)
+		ctx.WriteJSON(400, err)
+		p.getHeadErrored.Add(1)
+		return
+	}
+
+	ctx.WriteJSON(200, info)
+	p.getHeadCompleted.Inc()
 }
 
 func (p *Plugin) CheckPermissionsMW(ctx *httpserve.Context) {
