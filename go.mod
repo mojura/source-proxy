@@ -7,7 +7,7 @@ require (
 	github.com/hatchify/errors v0.4.82
 	github.com/mojura/kiroku v0.16.0
 	github.com/prometheus/client_golang v1.20.5
-	github.com/vroomy-ext/digitalocean-s3-plugin v0.9.0
+	github.com/vroomy-ext/digitalocean-s3-plugin v0.9.1
 	github.com/vroomy-ext/prometheus-plugin v0.1.0
 	github.com/vroomy/httpserve v0.12.2
 	github.com/vroomy/vroomy v0.18.6
@@ -31,7 +31,7 @@ require (
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/klauspost/compress v1.17.9 // indirect
 	github.com/mojura/enkodo v0.5.7 // indirect
-	github.com/mojura/sync-s3 v0.9.0 // indirect
+	github.com/mojura/sync-s3 v0.9.1 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/prometheus/client_model v0.6.1 // indirect
 	github.com/prometheus/common v0.62.0 // indirect
