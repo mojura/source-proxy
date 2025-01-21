@@ -43,10 +43,10 @@ github.com/kylelemons/godebug v1.1.0 h1:RPNrshWIDI6G2gRW9EHilWtl7Z6Sb1BR0xunSBf0
 github.com/kylelemons/godebug v1.1.0/go.mod h1:9/0rRGxNHcop5bhtWyNeEfOS8JIWk580+fNqagV/RAw=
 github.com/mojura/enkodo v0.5.7 h1:g+vvhX13j5ayhcLdzqr0fAB6tUVfhi8vgWX4tnrY/pk=
 github.com/mojura/enkodo v0.5.7/go.mod h1:9/1bBkNTRhwLPSFAo0uG1a+numnsZMxNIzLdWxlFl+g=
-github.com/mojura/kiroku v0.15.0 h1:43krMLjhcWSObJloYu4e+Dz/83BttRYwp9IgZUlnInY=
-github.com/mojura/kiroku v0.15.0/go.mod h1:5eEZJhOV6uFRgNUFB+vqds3Yem+pO70w5yrVWy00T1w=
-github.com/mojura/sync-s3 v0.8.0 h1:UxkVXMHzspGTadfRFJ0Wgi1q8r0MroNzjAybFT6R5c0=
-github.com/mojura/sync-s3 v0.8.0/go.mod h1:MY0RznLju4m0Lkf5ceH+JazE8ICrqwezB3mLbuH+wZY=
+github.com/mojura/kiroku v0.16.0 h1:K9gxHYr6heScvrhAaJyD01EwYTChcYZ+Loama6KE1CI=
+github.com/mojura/kiroku v0.16.0/go.mod h1:5eEZJhOV6uFRgNUFB+vqds3Yem+pO70w5yrVWy00T1w=
+github.com/mojura/sync-s3 v0.9.0 h1:K+U21R69b0IyPBOxZxKIjCiw/XSIwzqsuBzAqgyyUN8=
+github.com/mojura/sync-s3 v0.9.0/go.mod h1:Uj0QRQm7+tS59F2/Ls7KPoSrLxmPIoblpE0C+H/u9X4=
 github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 h1:C3w9PqII01/Oq1c1nUAm88MOHcQC9l5mIlSMApZMrHA=
 github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822/go.mod h1:+n7T8mK8HuQTcFwEeznm/DIxMOiR9yIdICNftLE1DvQ=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
@@ -64,8 +64,8 @@ github.com/prometheus/procfs v0.15.1/go.mod h1:fB45yRUv8NstnjriLhBQLuOUt+WW4BsoG
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.10.0 h1:Xv5erBjTwe/5IxqUQTdXv5kgmIvbHo3QQyRwhJsOfJA=
 github.com/stretchr/testify v1.10.0/go.mod h1:r2ic/lqez/lEtzL7wO/rwa5dbSLXVDPFyf8C91i36aY=
-github.com/vroomy-ext/digitalocean-s3-plugin v0.8.0 h1:iyJ3gdlqHN8/xbEmf2AVGhB6EjU1EIr8FJeseBGIGOo=
-github.com/vroomy-ext/digitalocean-s3-plugin v0.8.0/go.mod h1:E+VanBr3cUUGAr1XSPz+ehaOR2/DozeZ6HyHImndqVg=
+github.com/vroomy-ext/digitalocean-s3-plugin v0.9.0 h1:ZJ+kcwFzDoVBH3v0rfbuSVTLw5ws3XS73sheHTp1i84=
+github.com/vroomy-ext/digitalocean-s3-plugin v0.9.0/go.mod h1:PgKDuN5PFaAr8HrifzF8na3XJnUWaD//UGh54y7NVM4=
 github.com/vroomy-ext/prometheus-plugin v0.1.0 h1:kdu+jg2qlN4Lk2tJCTFHUMbzH2nxIjj6TpUJcDWgmag=
 github.com/vroomy-ext/prometheus-plugin v0.1.0/go.mod h1:Z1+6X0qsTIDe+Gg8XipTtRtnWQ8KbjypmH7y6Vzdg9Y=
 github.com/vroomy/httpserve v0.12.2 h1:mkq4cN3HfpE9FCWmlgGBSO//TxJl7z41vjufarqfyN0=

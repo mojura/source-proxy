@@ -104,7 +104,7 @@ func (c *Client) GetNextList(ctx context.Context, prefix, lastFilename string, m
 	}
 }
 
-func (c *Client) GetHead(ctx context.Context, prefix, filename string) (info kiroku.Info, err error) {
+func (c *Client) GetInfo(ctx context.Context, prefix, filename string) (info kiroku.Info, err error) {
 	filename = url.PathEscape(filename)
 	endpoint := fmt.Sprintf("/api/proxy/file/%s/%s", prefix, filename)
 	var resp apiResp
