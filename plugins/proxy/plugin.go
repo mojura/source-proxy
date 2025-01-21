@@ -104,9 +104,9 @@ func (p *Plugin) Load(env vroomy.Environment) (err error) {
 		Help: "The number of GetNext events completed",
 	})
 
-	p.getNextListsErrored = promauto.NewCounter(prometheus.CounterOpts{
-		Name: "source_proxy_get_next_lists_errored_total",
-		Help: "The number of GetNextList events with errors",
+	p.getNextsErrored = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "source_proxy_get_nexts_errored_total",
+		Help: "The number of GetNext events with errors",
 	})
 
 	p.getNextListsStarted = promauto.NewCounter(prometheus.CounterOpts{
@@ -119,8 +119,23 @@ func (p *Plugin) Load(env vroomy.Environment) (err error) {
 		Help: "The number of GetNextList events completed",
 	})
 
-	p.getNextsErrored = promauto.NewCounter(prometheus.CounterOpts{
-		Name: "source_proxy_get_nexts_errored_total",
+	p.getNextListsErrored = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "source_proxy_get_next_lists_errored_total",
+		Help: "The number of GetNextList events with errors",
+	})
+
+	p.getInfoStarted = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "source_proxy_get_info_started_total",
+		Help: "The number of GetNextList events started",
+	})
+
+	p.getInfoCompleted = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "source_proxy_get_info_completed_total",
+		Help: "The number of GetNextList events completed",
+	})
+
+	p.getInfoErrored = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "source_proxy_get_info_errored_total",
 		Help: "The number of GetNext events with errors",
 	})
 
@@ -270,6 +285,8 @@ func (p *Plugin) GetInfo(ctx *httpserve.Context) {
 	prefix := ctx.Param("prefix")
 	filename := ctx.Param("filename")
 
+	fmt.Println("Prefix", prefix)
+	fmt.Println("Filename", filename)
 	if info, err = p.Source.GetInfo(req.Context(), prefix, filename); err != nil {
 		log.Printf("error getting head for filename: %v: %v req: %v", prefix, err, req)
 		err = fmt.Errorf("error getting head for filename: %v", err)
