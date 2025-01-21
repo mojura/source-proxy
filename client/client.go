@@ -106,10 +106,10 @@ func (c *Client) GetNextList(ctx context.Context, prefix, lastFilename string, m
 
 func (c *Client) GetInfo(ctx context.Context, prefix, filename string) (info kiroku.Info, err error) {
 	filename = url.PathEscape(filename)
-	endpoint := fmt.Sprintf("/api/proxy/file/%s/%s", prefix, filename)
+	endpoint := fmt.Sprintf("/api/proxy/info/%s/%s", prefix, filename)
 	var resp apiResp
 	resp.Data = &info
-	err = c.request(ctx, "HEAD", endpoint, nil, func(r io.Reader) (err error) {
+	err = c.request(ctx, "GET", endpoint, nil, func(r io.Reader) (err error) {
 		return json.NewDecoder(r).Decode(&resp)
 	})
 
