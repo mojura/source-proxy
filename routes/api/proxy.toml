@@ -13,6 +13,12 @@ handlers = ["proxy.Get"]
 [[route]]
 method = "GET"
 group = "proxy"
+httpPath = "/info/:prefix/:filename"
+handlers = ["proxy.GetInfo"]
+
+[[route]]
+method = "GET"
+group = "proxy"
 httpPath = "/next/:prefix/:filename"
 handlers = ["proxy.GetNext"]
 
