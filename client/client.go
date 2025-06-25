@@ -11,6 +11,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/hashicorp/go-retryablehttp"
 	"github.com/mojura/kiroku"
 )
 
@@ -22,7 +23,11 @@ func New(host, apiKey string) (cc *Client, err error) {
 		return
 	}
 
+	retryClient := retryablehttp.NewClient()
+	retryClient.RetryMax = 10
+
 	var c Client
+	c.hc = *retryClient.StandardClient()
 	c.host = host
 	c.apiKey = apiKey
 	c.u = *u
