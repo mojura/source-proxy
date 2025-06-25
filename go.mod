@@ -3,6 +3,7 @@ module github.com/mojura/source-proxy
 go 1.23.0
 
 require (
+	github.com/hashicorp/go-retryablehttp v0.7.8
 	github.com/hatchify/closer v0.4.81
 	github.com/hatchify/errors v0.4.82
 	github.com/mojura/kiroku v0.16.0
@@ -25,6 +26,7 @@ require (
 	github.com/gdbu/reflectio v0.1.5 // indirect
 	github.com/gdbu/scribe v0.5.3 // indirect
 	github.com/gdbu/stringset v0.4.0 // indirect
+	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hatchify/atoms v0.4.79 // indirect
 	github.com/hatchify/colors v0.4.79 // indirect
 	github.com/hatchify/cron v0.4.82 // indirect
