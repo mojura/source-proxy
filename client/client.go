@@ -13,6 +13,7 @@ import (
 
 	"github.com/hashicorp/go-retryablehttp"
 	"github.com/mojura/kiroku"
+	"github.com/rs/zerolog"
 )
 
 var _ kiroku.Source = &Client{}
@@ -23,8 +24,12 @@ func New(host, apiKey string) (cc *Client, err error) {
 		return
 	}
 
+	// set min log level for remove debug msg on each request
+	logger := zerolog.New(os.Stderr).With().Logger().Level(zerolog.InfoLevel)
+
 	retryClient := retryablehttp.NewClient()
 	retryClient.RetryMax = 10
+	retryClient.Logger = &retryableLogger{logger: &logger}
 
 	var c Client
 	c.hc = *retryClient.StandardClient()
@@ -33,6 +38,30 @@ func New(host, apiKey string) (cc *Client, err error) {
 	c.u = *u
 	cc = &c
 	return
+}
+
+type retryableLogger struct {
+	logger *zerolog.Logger
+}
+
+func (l *retryableLogger) Error(msg string, keysAndValues ...interface{}) {
+	l.logger.Error().Str("go-mod", "go-retryablehttp").Fields(keysAndValues).Msg(msg)
+}
+
+func (l *retryableLogger) Info(msg string, keysAndValues ...interface{}) {
+	l.logger.Info().Str("go-mod", "go-retryablehttp").Fields(keysAndValues).Msg(msg)
+}
+
+func (l *retryableLogger) Debug(msg string, keysAndValues ...interface{}) {
+	// update to info for log retry
+	if msg == "retrying request" {
+		l.Info(msg, keysAndValues...)
+	}
+	l.logger.Debug().Str("go-mod", "go-retryablehttp").Fields(keysAndValues).Msg(msg)
+}
+
+func (l *retryableLogger) Warn(msg string, keysAndValues ...interface{}) {
+	l.logger.Warn().Str("go-mod", "go-retryablehttp").Fields(keysAndValues).Msg(msg)
 }
 
 type Client struct {
