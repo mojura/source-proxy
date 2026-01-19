@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/hatchify/errors"
+	"github.com/gdbu/errors"
 )
 
 func handleError(res *http.Response) (err error) {
