@@ -6,7 +6,7 @@ import (
 	"os"
 	"path"
 
-	"github.com/hatchify/closer"
+	"github.com/gdbu/closer"
 	"github.com/vroomy/vroomy"
 
 	_ "go.uber.org/automaxprocs"
